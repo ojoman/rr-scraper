@@ -4,6 +4,7 @@ from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.common.keys import Keys
 
 browser = webdriver.Chrome(ChromeDriverManager().install())
+browser.set_window_size(1080,800)
 browser.get("https://dex.pokemonshowdown.com/pokemon/")
 search_input = browser.find_element_by_class_name("searchbox")
 
@@ -20,45 +21,20 @@ for name in pokemon_names[0:151]:
 
   pokemon = name
   number = browser.find_element_by_tag_name("code").text.replace("#", "")
-
-  types = browser.find_elements_by_class_name("type")
-  type1 = types[0].text
-  if len(types) == 2:
-    type2 = types[1].text
-  else:
-    type2 = 'none'
-
-  abilities = browser.find_elements_by_css_selector("dd.imgentry > a")
-  ability1 = abilities[0].text
-  if len(abilities) >= 2:
-    ability2 = abilities[1].text
-  else:
-    ability2 = 'none'
-
-  if len(abilities) == 3:
-    ability3 = abilities[2].text
-  else:
-    ability3 = 'none'
-
-  base_stats = browser.find_elements_by_class_name('stat')
-  hp = base_stats[0].text
-  attack = base_stats[1].text
-  defense = base_stats[2].text
-  special_atk = base_stats[3].text
-  special_def = base_stats[4].text
-  speed = base_stats[5].text
-  sprite = browser.find_element_by_class_name("sprite").get_attribute("src")
-
-  file.write(pokemon + "," + number + "," + 
-    type1 + "," + type2 + "," + ability1 + "," 
-    + ability2 + "," + ability3 + "," + hp + "," 
-    + attack + "," + defense + "," + special_atk 
-    + "," + special_def + "," + speed + "," + sprite 
-    + "\n")
+  
+  moves = browser.find_elements_by_class_name("shortmovenamecol")
+  movelist = "#"
+  for move in moves:
+  	if "#" + move.text + "#" not in movelist:
+	  	movelist += move.text
+	  	movelist += "#"
+      
+  file.write(pokemon + "," + number 
+    + "," + movelist + "\n")
+  print(number)
 
 browser.close()
 file.close()
-
 
 
 
