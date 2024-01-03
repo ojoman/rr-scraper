@@ -22,7 +22,7 @@ def getElements():
 prevMon = "a"
 newMon = "b"
 allMons = []
-file = open("./pokemon-data/pokemon-gen1-data.csv", 'w')
+file = open("./pokemon-data/data.csv", 'w')
 while not(prevMon == newMon):
   prevMon = newMon
   allMons = getElements()
