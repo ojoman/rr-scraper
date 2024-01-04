@@ -1,2 +1,4 @@
 selenium==3.14.0
 webdriver_manager
+chromedriver-autoinstaller
+pyvirtualdisplay
