@@ -109,13 +109,13 @@ for name in allMons:
   #moves are separated by '#' with a bonus '#' on the start and end so i can regex match them
   try:
     moves = browser.find_elements_by_class_name("shortmovenamecol")
+    movelist = "#"
+    for move in moves:
+      if "#" + move.text + "#" not in movelist:
+        movelist += move.text
+        movelist += "#"
   except:
-    moves = []
-  movelist = "#"
-  for move in moves:
-    if "#" + move.text + "#" not in movelist:
-      movelist += move.text
-      movelist += "#"
+    movelist = ''
       
   #changed the order slightly compared to the original since i'm using this in place of a dex
   #i had been using in the past and wanted them to be compatible
