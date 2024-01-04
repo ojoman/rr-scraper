@@ -115,7 +115,9 @@ for name in allMons:
       if "#" + move.text + "#" not in movelist:
         movelist += move.text
         movelist += "#"
+    print("success")
   except:
+    print("excepted")
     movelist = ''
       
   #changed the order slightly compared to the original since i'm using this in place of a dex
