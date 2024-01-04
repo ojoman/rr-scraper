@@ -107,9 +107,10 @@ for name in allMons:
   sprite = browser.find_element_by_class_name("sprite").get_attribute("src")
   
   #moves are separated by '#' with a bonus '#' on the start and end so i can regex match them
+  
+  moves = browser.find_elements_by_class_name("shortmovenamecol")
+  movelist = "#"
   try:
-    moves = browser.find_elements_by_class_name("shortmovenamecol")
-    movelist = "#"
     for move in moves:
       if "#" + move.text + "#" not in movelist:
         movelist += move.text
