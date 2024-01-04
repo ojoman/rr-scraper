@@ -1,13 +1,21 @@
 import json
+import chromedriver_autoinstaller
 from selenium import webdriver
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver import ActionChains
+from pyvirtualdisplay import Display
+
+
+display = Display(visible=0, size=(1200, 800))  
+display.start()
+
+chromedriver_autoinstaller.install()
 
 browser = webdriver.Chrome(ChromeDriverManager().install())
 
 #wider window required for dual screen operation
-browser.set_window_size(1280,800)
+browser.set_window_size(1200,800)
 browser.get("https://dex.pokemonshowdown.com/pokemon/")
 
 #this is wet garbage but i'm only running it once so you can fix it
@@ -22,7 +30,7 @@ def getElements():
 prevMon = "a"
 newMon = "b"
 allMons = []
-file = open("./pokemon-data/data.csv", 'w')
+file = open("./pokemon-data/pokemon-gen1-data.csv", 'w')
 while not(prevMon == newMon):
   prevMon = newMon
   allMons = getElements()
