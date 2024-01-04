@@ -1,18 +1,30 @@
 import json
 import chromedriver_autoinstaller
 from selenium import webdriver
-from webdriver_manager.chrome import ChromeDriverManager
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver import ActionChains
 from pyvirtualdisplay import Display
 
 
-display = Display(visible=0, size=(1200, 800))  
+display = Display(visible=0, size=(800, 800)) 
 display.start()
 
 chromedriver_autoinstaller.install()
+chrome_options = webdriver.ChromeOptions()
 
-browser = webdriver.Chrome(ChromeDriverManager().install())
+options = [
+  "--window-size=1200,1200",
+  "--ignore-certificate-errors"
+  
+  ]
+
+for option in options:
+  chrome_options.add_argument(option)
+
+
+browser = webdriver.Chrome(options = chrome_options)
 
 #wider window required for dual screen operation
 browser.set_window_size(1200,800)
@@ -30,7 +42,7 @@ def getElements():
 prevMon = "a"
 newMon = "b"
 allMons = []
-file = open("./pokemon-data/pokemon-gen1-data.csv", 'w')
+file = open("./pokemon-data/data.csv", 'w')
 while not(prevMon == newMon):
   prevMon = newMon
   allMons = getElements()
