@@ -111,14 +111,15 @@ for name in allMons:
   moves = browser.find_elements_by_class_name("shortmovenamecol")
   movelist = "#"
   try:
-    for move in moves:
-      if "#" + move.text + "#" not in movelist:
-        movelist += move.text
-        movelist += "#"
-    print("success")
+    if len(moves) > 0:
+      for move in moves:
+        if "#" + move.text + "#" not in movelist:
+	  movelist += move.text
+	  movelist += "#"
+    else:
+      movelist = ''
   except:
-    print("excepted")
-    movelist = ''
+      movelist = ''
       
   #changed the order slightly compared to the original since i'm using this in place of a dex
   #i had been using in the past and wanted them to be compatible
