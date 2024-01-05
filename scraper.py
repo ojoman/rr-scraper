@@ -114,8 +114,8 @@ for name in allMons:
     if len(moves) > 0:
       for move in moves:
         if "#" + move.text + "#" not in movelist:
-	  movelist += move.text
-	  movelist += "#"
+          movelist += move.text
+          movelist += "#"
     else:
       movelist = ''
   except:
