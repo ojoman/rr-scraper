@@ -69,6 +69,7 @@ for name in allMons:
   #CAP, illegal, pokestar etc
   if "#" in number:
     number = number.replace("#", "")
+
   
   types = browser.find_elements_by_class_name("type")
   type1 = types[0].text.capitalize()
@@ -120,7 +121,9 @@ for name in allMons:
       movelist = ''
   except:
       movelist = ''
-      
+
+  size = browser.find_element_by_class_name("sizeentry").find_element_by_tag_name("dd").text.split("\n")[0]
+
   #changed the order slightly compared to the original since i'm using this in place of a dex
   #i had been using in the past and wanted them to be compatible
   file.write(number + "," + 
@@ -137,7 +140,8 @@ for name in allMons:
     special_atk + "," + 
     special_def + "," + 
     speed + "," + 
-    movelist + "\n")
+    movelist + "," + 
+    size + "\n")
   print(number)
 
 browser.close()
