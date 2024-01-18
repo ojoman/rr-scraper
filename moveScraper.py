@@ -58,20 +58,14 @@ for name in allMoves:
   search_input.clear()
   search_input.send_keys(name)
   search_input.send_keys(Keys.RETURN)
-  
-  #non-standard mons are sorted by tier, which is generally CAP or Illegal
     
   print(name)
   types = browser.find_element_by_class_name("movetypeentry").find_elements_by_class_name("type")
-  #print(types[0].text)
-  #print(types[1].text)
   if not types[1].text == "STATUS":
     basePower = browser.find_element_by_class_name("powerentry").find_element_by_tag_name("strong").text
-    #print(basePower)
   else:
     basePower = "n/a"
   accuracy = browser.find_element_by_class_name("accuracyentry").find_element_by_tag_name("dd").text
-  #print(accuracy)
   pp = browser.find_element_by_class_name("ppentry").find_element_by_tag_name("dd")
   pp = pp.text.split("\n")
   if len(pp) == 1:
@@ -83,13 +77,14 @@ for name in allMoves:
     maxPP = maxPP.replace(")", "")
     pp = minPP + "-" + maxPP
 
-  #print(pp)
+
   
   desc = "\"" + browser.find_element_by_tag_name("p").text + "\""
   name = "\"" + name + "\""
+
   file.write(name + "," +
-    types[0].text + "," +
-    types[1].text + "," +
+    types[0].text.capitalize() + "," +
+    types[1].text.capitalize() + "," +
     basePower + "," +
     accuracy + "," +
     pp + "," +
