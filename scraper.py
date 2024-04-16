@@ -124,8 +124,8 @@ for name in allMons:
   #print(movelist)
   
   file.write(number + "," + 
-    name + "," + 
-    "sprite" + "," + 
+    name + ",\"" + 
+    sprite + "\"," + 
     type1 + "," + 
     type2 + "," + 
     ability1 + "," + 
