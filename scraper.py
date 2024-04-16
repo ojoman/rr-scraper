@@ -1,10 +1,10 @@
 import json
+import time
 import chromedriver_autoinstaller
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.keys import Keys
-from selenium.webdriver import ActionChains
 from pyvirtualdisplay import Display
 
 
@@ -28,107 +28,104 @@ browser = webdriver.Chrome(options = chrome_options)
 
 #wider window required for dual screen operation
 browser.set_window_size(1200,800)
-browser.get("https://dex.pokemonshowdown.com/pokemon/")
+browser.get("https://dex.radicalred.net/")
+time.sleep(2)
 
-#this is wet garbage but i'm only running it once so you can fix it
-def getElements():
-  mons = browser.find_elements_by_class_name("pokemonnamecol")
-  ActionChains(browser)\
-  .move_to_element(mons[len(mons) - 1])\
-  .perform()
-  return mons
+SCROLL_PAUSE_TIME = 0.1
 
-#i love variables
-prevMon = "a"
-newMon = "b"
-allMons = []
-file = open("./pokemon-data/data.csv", 'w')
-while not(prevMon == newMon):
-  prevMon = newMon
-  allMons = getElements()
-  newMon = allMons[len(allMons) - 1].text
-  
-allMons = list(map(lambda n: n.text, allMons))
+# Get scroll height
+last_height = browser.execute_script("return document.body.scrollHeight")
+
+while True:
+    # Scroll down to bottom
+    browser.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+
+    # Wait to load page
+    time.sleep(SCROLL_PAUSE_TIME)
+
+    # Calculate new scroll height and compare with last scroll height
+    new_height = browser.execute_script("return document.body.scrollHeight")
+    if new_height == last_height:
+        break
+    last_height = new_height
+
+
+mons = browser.find_elements_by_class_name("speciesNameWrapper")
+allMons = list(map(lambda n: n.text, mons))
+
 
 #reloading stopped the data from being weird and stale
-browser.get("https://dex.pokemonshowdown.com/pokemon/")
-search_input = browser.find_element_by_class_name("searchbox")
+browser.get("https://dex.radicalred.net/")
+time.sleep(2)
+search_input = browser.find_element_by_id("speciesFilterInput")
+file = open("./pokemon-data/data.csv", 'w')
 
 for name in allMons:
   search_input.clear()
   search_input.send_keys(name)
   search_input.send_keys(Keys.RETURN)
+  time.sleep(0.4)
+  block = browser.find_element_by_id("speciesModal")
+  stuff = block.find_element_by_id("speciesPanelInfoDisplay")
   
-  #non-standard mons are sorted by tier, which is generally CAP or Illegal
-  try:
-    number = browser.find_element_by_tag_name("code").text
-  except:
-    number = browser.find_element_by_class_name("tier").text
-  
-  
-  #CAP, illegal, pokestar etc
+  number = stuff.find_element_by_class_name("infoDexIDWrapper").text
   if "#" in number:
     number = number.replace("#", "")
-
   
-  types = browser.find_elements_by_class_name("type")
+  sprite = stuff.find_element_by_class_name("infoSprite").get_attribute("src")
+  
+  types = stuff.find_element_by_class_name("infoTypesWrapper").find_elements_by_class_name("typeWrapper")
   type1 = types[0].text.capitalize()
-  if len(types) == 2:
+  if len(types) > 1:
     type2 = types[1].text.capitalize()
   else:
     type2 = 'none'
-
-  #some mons (just missingno tbh) have no abilities
+  abilitys = stuff.find_element_by_class_name("infoAbilitiesWrapper")
   try:
-    abilities = browser.find_elements_by_css_selector("dd.imgentry > a")
-    ability1 = abilities[0].text
-    if len(abilities) >= 2:
-      ability2 = abilities[1].text
-    else:
-      ability2 = 'none'
-
-    if len(abilities) == 3:
-      ability3 = abilities[2].text
-    else:
-      ability3 = 'none'
+    ability1 = abilitys.find_element_by_class_name("infoAbilitiesPrimary").text.split("-")[0].capitalize()
   except:
     ability1 = 'none'
+    
+  try:
+    ability2 = abilitys.find_element_by_class_name("infoAbilitiesSecondary").text.split("-")[0].capitalize()
+  except:
     ability2 = 'none'
+  
+  try:
+    ability3 = abilitys.find_element_by_class_name("infoAbilitiesHidden").text.split("-")[0].capitalize()
+  except:
     ability3 = 'none'
   
-
-  base_stats = browser.find_elements_by_class_name('stat')
-  hp = base_stats[0].text
-  attack = base_stats[1].text
-  defense = base_stats[2].text
-  special_atk = base_stats[3].text
-  special_def = base_stats[4].text
-  speed = base_stats[5].text
+  stats = stuff.find_elements_by_class_name("infoStatValue")
   
-  sprite = browser.find_element_by_class_name("sprite").get_attribute("src")
+  hp = stats[0].text
+  attack = stats[1].text
+  defense = stats[2].text
+  special_atk = stats[3].text
+  special_def = stats[4].text
+  speed = stats[5].text
   
-  #moves are separated by '#' with a bonus '#' on the start and end so i can regex match them
+  moveArea = browser.find_element_by_id("speciesPanelLearnsets")
+  moves = moveArea.find_elements_by_class_name("moveNameWrapper")
+  moves = list(map(lambda n: n.text, moves))
   
-  moves = browser.find_elements_by_class_name("shortmovenamecol")
   movelist = "#"
   try:
     if len(moves) > 0:
       for move in moves:
-        if "#" + move.text + "#" not in movelist:
-          movelist += move.text
+        if "#" + move + "#" not in movelist:
+          movelist += move
           movelist += "#"
     else:
       movelist = ''
   except:
       movelist = ''
-
-  size = browser.find_element_by_class_name("sizeentry").find_element_by_tag_name("dd").text.split("\n")[0]
-
-  #changed the order slightly compared to the original since i'm using this in place of a dex
-  #i had been using in the past and wanted them to be compatible
+  
+  #print(movelist)
+  
   file.write(number + "," + 
     name + "," + 
-    sprite + "," + 
+    "sprite" + "," + 
     type1 + "," + 
     type2 + "," + 
     ability1 + "," + 
@@ -140,9 +137,17 @@ for name in allMons:
     special_atk + "," + 
     special_def + "," + 
     speed + "," + 
-    movelist + "," + 
-    size + "\n")
-  print(number)
+    movelist + "\n")
+  
+  
+  try:
+    block.send_keys(Keys.ESCAPE)
+    #print("success")
+    time.sleep(0.4)
+  except:
+    print("angry")
+  print(name)
+  #print(number + " " + name + " " + type1 + " " + type2 + " " + ability1 + " " + ability2 + " " + ability3)
 
 browser.close()
 file.close()
