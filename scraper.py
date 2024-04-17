@@ -61,11 +61,20 @@ search_input = browser.find_element_by_id("speciesFilterInput")
 file = open("./pokemon-data/data.csv", 'w')
 
 for name in allMons:
+  if (name == prevname):
+    continue
+  else:
+    prevname = name
+    
   search_input.clear()
   search_input.send_keys(name)
   search_input.send_keys(Keys.RETURN)
   time.sleep(0.5)
   block = browser.find_element_by_id("speciesModal")
+  if (block.get_attribute("aria-hidden") == "true"):
+    top = browser.find_element_by_class_name("speciesNameWrapper").click()
+    time.sleep(0.4)
+    block = browser.find_element_by_id("speciesModal")
   stuff = block.find_element_by_id("speciesPanelInfoDisplay")
   
   number = stuff.find_element_by_class_name("infoDexIDWrapper").text
@@ -109,17 +118,19 @@ for name in allMons:
   moves = moveArea.find_elements_by_class_name("moveNameWrapper")
   moves = list(map(lambda n: n.text, moves))
   
-  movelist = "#"
-  try:
-    if len(moves) > 0:
-      for move in moves:
-        if "#" + move + "#" not in movelist:
-          movelist += move
-          movelist += "#"
-    else:
-      movelist = ''
-  except:
-      movelist = ''
+  if ("-Mega" not in name):
+    movelist = "#"
+    try:
+      if len(moves) > 0:
+        for move in moves:
+          if "#" + move + "#" not in movelist:
+            movelist += move
+            movelist += "#"
+        movelist = movelist[:-1]    
+      else:
+        movelist = ''
+    except:
+        movelist = ''
   
   #print(movelist)
   
