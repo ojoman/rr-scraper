@@ -60,6 +60,7 @@ time.sleep(2)
 search_input = browser.find_element_by_id("speciesFilterInput")
 file = open("./pokemon-data/data.csv", 'w')
 
+prevname = "a"
 for name in allMons:
   if (name == prevname):
     continue
