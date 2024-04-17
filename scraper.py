@@ -64,7 +64,7 @@ for name in allMons:
   search_input.clear()
   search_input.send_keys(name)
   search_input.send_keys(Keys.RETURN)
-  time.sleep(0.4)
+  time.sleep(0.5)
   block = browser.find_element_by_id("speciesModal")
   stuff = block.find_element_by_id("speciesPanelInfoDisplay")
   
@@ -137,13 +137,13 @@ for name in allMons:
     special_atk + "," + 
     special_def + "," + 
     speed + "," + 
-    movelist + "\n")
+    movelist + "\n")s
   
   
   try:
     block.send_keys(Keys.ESCAPE)
     #print("success")
-    time.sleep(0.4)
+    time.sleep(0.5)
   except:
     print("angry")
   print(name)
