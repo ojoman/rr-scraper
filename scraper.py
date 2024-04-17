@@ -82,17 +82,17 @@ for name in allMons:
     type2 = 'none'
   abilitys = stuff.find_element_by_class_name("infoAbilitiesWrapper")
   try:
-    ability1 = abilitys.find_element_by_class_name("infoAbilitiesPrimary").text.split("-")[0].capitalize()
+    ability1 = abilitys.find_element_by_class_name("infoAbilitiesPrimary").text.split(" - ")[0]
   except:
     ability1 = 'none'
     
   try:
-    ability2 = abilitys.find_element_by_class_name("infoAbilitiesSecondary").text.split("-")[0].capitalize()
+    ability2 = abilitys.find_element_by_class_name("infoAbilitiesSecondary").text.split(" - ")[0]
   except:
     ability2 = 'none'
   
   try:
-    ability3 = abilitys.find_element_by_class_name("infoAbilitiesHidden").text.split("-")[0].capitalize()
+    ability3 = abilitys.find_element_by_class_name("infoAbilitiesHidden").text.split(" - ")[0]
   except:
     ability3 = 'none'
   
