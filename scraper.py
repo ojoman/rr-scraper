@@ -137,9 +137,7 @@ for name in allMons:
     special_atk + "," + 
     special_def + "," + 
     speed + "," + 
-    movelist + "\n")s
-  
-  
+    movelist + "\n")  
   try:
     block.send_keys(Keys.ESCAPE)
     #print("success")
