@@ -24,9 +24,6 @@ jobs:
 
       - name: Running the Pokedex Scraper
         run: python scraper.py
-      
-      - name: Running the Move Scraper
-        run: python moveScraper.py 
         
       - name: Commit and Push The Results From Python Selenium Action
         run: |
